@@ -1,3 +1,6 @@
+<?php
+echo \yii\bootstrap\Html::a('添加品牌',['brand/add'],['class'=>'btn btn-info']);
+?>
 <table class="table table-hover table-bordered table-striped">
     <tr>
         <th>ID</th>
@@ -13,7 +16,7 @@
             <td><?=$brand->id?></td>
             <td><?=$brand->name?></td>
             <td><?=$brand->intro?></td>
-            <td><?php if($brand->logo){echo \yii\bootstrap\Html::img($brand->logo,['width'=>80,'height'=>80]);}?></td>
+            <td><?php echo \yii\bootstrap\Html::img($brand->logo,['width'=>80,'height'=>50])?></td>
             <td><?=$brand->sort?></td>
             <td>
                 <?php
@@ -40,5 +43,5 @@ echo \yii\widgets\LinkPager::widget([
     'pagination'=>$page
 ]);
 echo '</div>';
-echo \yii\bootstrap\Html::a('添加品牌',['brand/add'],['class'=>'btn btn-info']);
+
 ?>

@@ -44,6 +44,13 @@ return [
             'rules' => [
             ],
         ],
+        'qiniu'=>[
+            'class'=>\backend\components\Qiniu::className(),
+            'accessKey'=>'LWIojI6DlaJ6lOBoeErN_z6wDhqMRFF6F7S2S7yp',
+            'secretKey'=>'Rbp45nOdM6jIXDTUb-aTxWFwluZQUPUc4g1bAtP2',
+            'bucket'=>'stefanshop',
+            'domain'=>'http://or9solen4.bkt.clouddn.com/',
+        ],
     ],
     'params' => $params,
 ];
