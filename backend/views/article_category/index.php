@@ -1,3 +1,6 @@
+<?php
+echo \yii\bootstrap\Html::a('添加文章分类',['article_category/add'],['class'=>'btn btn-info']);
+?>
 <table class="table table-hover table-bordered table-striped">
     <tr>
         <th>ID</th>
@@ -48,5 +51,5 @@ echo \yii\widgets\LinkPager::widget([
     'pagination'=>$page
 ]);
 echo '</div>';
-echo \yii\bootstrap\Html::a('添加文章分类',['article_category/add'],['class'=>'btn btn-info']);
+
 ?>

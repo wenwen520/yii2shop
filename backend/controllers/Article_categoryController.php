@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\Article;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
 use yii\web\Request;

@@ -21,6 +21,10 @@ class Article extends \yii\db\ActiveRecord
     public function getArticle_category(){
         return $this->hasOne(ArticleCategory::className(),['id'=>'article_category_id']);
     }
+    //建立文章表与文章详情的关联
+    public function getArticle_detail(){
+        return $this->hasOne(ArticleDetail::className(),['article_id'=>'id']);
+    }
     /**
      * @inheritdoc
      */

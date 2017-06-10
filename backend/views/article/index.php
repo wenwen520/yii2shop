@@ -1,3 +1,6 @@
+<?php
+echo \yii\bootstrap\Html::a('添加文章',['article/add'],['class'=>'btn btn-info']);
+?>
 <table class="table table-hover table-bordered table-striped">
     <tr>
         <th>ID</th>
@@ -31,6 +34,7 @@
             <td>
                 <?php echo \yii\bootstrap\Html::a('删除',['article/del','id'=>$article->id],['class'=>'btn btn-danger btn-sm'])?>
                 <?php echo \yii\bootstrap\Html::a('更新',['article/update','id'=>$article->id],['class'=>'btn btn-warning btn-sm'])?>
+                <?php echo \yii\bootstrap\Html::a('阅读全文',['article/detail','id'=>$article->id],['class'=>'btn btn-primary btn-sm'])?>
             </td>
         </tr>
     <?php endforeach;?>
@@ -42,5 +46,5 @@ echo \yii\widgets\LinkPager::widget([
     'pagination'=>$page
 ]);
 echo '</div>';
-echo \yii\bootstrap\Html::a('添加文章',['article/add'],['class'=>'btn btn-info']);
+
 ?>
