@@ -112,4 +112,18 @@ class ArticleController extends \yii\web\Controller
         //渲染详情视图
         return $this->render('detail',['model'=>$model]);
     }
+    //ueditor插件
+    public function actions()
+    {
+        return [
+
+            'ueditor' => [
+                'class' => 'crazyfd\ueditor\Upload',
+                'config'=>[
+                    'uploadDir'=>date('Y/m/d')
+                ]
+
+            ],
+        ];
+    }
 }

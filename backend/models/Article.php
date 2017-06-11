@@ -59,6 +59,7 @@ class Article extends \yii\db\ActiveRecord
             'sort' => '排序',
             'status' => '状态',
             'create_time' => '创建时间',
+            ''
         ];
     }
 }
