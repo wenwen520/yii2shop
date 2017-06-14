@@ -2,12 +2,12 @@
 echo \yii\bootstrap\Html::a('新增商品',['goods/add'],['class'=>'btn btn-info']);
 //表单开始
 $form=\yii\bootstrap\ActiveForm::begin();
-echo '<div style="width:300px">'.$form->field($model,'condition').'</div>';
+echo '<div style="width:300px;margin-top:10px;">'.$form->field($model,'condition')->textInput(['placeholder'=>'商品名'])->label(false).'</div>';
 echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-primary']);
 \yii\bootstrap\ActiveForm::end();
 ?>
    <!-- <div class="row"><div class="col-md-1">{image}</div><div class="col-md-2">{input}</div></div>-->
-<table class="table table-responsive table-bordered">
+<table class="table table-responsive table-bordered" style="margin-top: 10px">
     <tr>
         <th>ID</th>
         <th>名称</th>
@@ -29,7 +29,7 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-primary']);
             <td><?=$good->id?></td>
             <td><?=$good->name?></td>
             <td><?=$good->sn?></td>
-            <td><?php echo \yii\bootstrap\Html::img($good->logo,['widht'=>80,'height'=>50])?></td>
+            <td><?php echo \yii\bootstrap\Html::img($good->logo,['width'=>80,'height'=>50,'class'=>"img-circle"])?></td>
             <td><?=$good->cate->name?></td>
             <td><?=$good->brand->name?></td>
             <td><?=$good->market_price?></td>

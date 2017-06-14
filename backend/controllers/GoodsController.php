@@ -7,8 +7,10 @@ use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsIntro;
+use backend\models\Images;
 use yii\data\Pagination;
 use yii\web\UploadedFile;
+use xj\uploadify\UploadAction;
 
 class GoodsController extends \yii\web\Controller
 {
@@ -93,7 +95,7 @@ class GoodsController extends \yii\web\Controller
         //渲染添加首页
         return $this->render('add',['model'=>$model,'categorys'=>$categorys,'brands'=>$brands,'detail'=>$detail]);
     }
-    //ueditor插件
+    //ueditor插件和uploadify插件
     public function actions()
     {
         return [
@@ -104,6 +106,54 @@ class GoodsController extends \yii\web\Controller
                     'uploadDir'=>date('Y/m/d')
                 ]
 
+            ],
+            's-upload' => [
+                'class' => UploadAction::className(),
+                'basePath' => '@webroot/upload',
+                'baseUrl' => '@web/upload',
+                'enableCsrf' => true, // default
+                'postFieldName' => 'Filedata', // default
+                //BEGIN METHOD
+                'format' => [$this, 'methodName'],
+                //END METHOD
+                //BEGIN CLOSURE BY-HASH
+                'overwriteIfExist' => true,
+                /*'format' => function (UploadAction $action) {
+                    $fileext = $action->uploadfile->getExtension();
+                    $filename = sha1_file($action->uploadfile->tempName);
+                    return "{$filename}.{$fileext}";
+                },*/
+                //END CLOSURE BY-HASH
+                //BEGIN CLOSURE BY TIME
+                'format' => function (UploadAction $action) {
+                    $fileext = $action->uploadfile->getExtension();
+                    $filehash = sha1(uniqid() . time());
+                    $p1 = substr($filehash, 0, 2);
+                    $p2 = substr($filehash, 2, 2);
+                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
+                },
+                //END CLOSURE BY TIME
+                'validateOptions' => [
+                    'extensions' => ['jpg', 'png'],
+                    'maxSize' => 1 * 1024 * 1024, //file size
+                ],
+                'beforeValidate' => function (UploadAction $action) {
+                    //throw new Exception('test error');
+                },
+                'afterValidate' => function (UploadAction $action) {},
+                'beforeSave' => function (UploadAction $action) {},
+                'afterSave' => function (UploadAction $action) {
+                    //图片上传成功的同时，将图片和商品关联起来
+                    $model=new Images();
+                    $model->goods_id=\Yii::$app->request->post('goods_id');
+                    $model->image=$action->getWebUrl();
+                    $model->save();
+                    $action->output['fileUrl'] = $model->image;
+                    $action->output['id']=$model->id; //回调一个ID
+                    /*$action->getFilename(); // "image/yyyymmddtimerand.jpg"
+                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
+                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"*/
+                },
             ],
         ];
     }
@@ -173,8 +223,22 @@ class GoodsController extends \yii\web\Controller
         //找出所有的图片
         $images=$model->getImages()->all();
         //显示相册
-        return $this->render('images',['images'=>$images]);
+        return $this->render('images',['images'=>$images,'model'=>$model]);
 
     }
+    //新建AJAX删除相册图片的方法
+    public function actionDelete(){
+        $id=\Yii::$app->request->post('id');
+        $model=Images::findOne(['id'=>$id]);
+        //删除成功返回true，失败返回false
+        if($model){
+            $model->delete();
+            return 'success';
+        }else{
+            return 'failed';
+        }
+    }
+
+
 
 }

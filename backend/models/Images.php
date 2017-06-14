@@ -13,7 +13,6 @@ use Yii;
  */
 class Images extends \yii\db\ActiveRecord
 {
-    public $imgFile;
     public function getGoods(){
         return $this->hasOne(Goods::className(),['id'=>'goods_id']);
     }
@@ -33,7 +32,7 @@ class Images extends \yii\db\ActiveRecord
         return [
             [['goods_id'], 'integer'],
             [['image'], 'string', 'max' => 255],
-            [['imgFile'],'file','extensions'=>['jpg','png','gif']],
+            [['image'],'file','extensions'=>['jpg','png','gif']],
         ];
     }
 
