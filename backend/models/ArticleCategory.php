@@ -30,7 +30,7 @@ class ArticleCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name','sort'], 'required'],
             [['intro'], 'string'],
             [['sort', 'status', 'is_help'], 'integer'],
             [['name'], 'string', 'max' => 50],

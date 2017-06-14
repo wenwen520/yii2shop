@@ -14,18 +14,9 @@ class Goods_categoryController extends \yii\web\Controller
     {
         //$this->layout=false;
         //从数据库查询所有文章
-        $goods_category_page=GoodsCategory::find();
-        //获取总记录条数
-        $total=$goods_category_page->count();
-        //配置分页
-        $page=new Pagination([
-            'totalCount'=>$total,
-            'defaultPageSize'=>3,
-        ]);
-        //查询每页对应的记录
-        $categorys=$goods_category_page->offset($page->offset)->limit($page->limit)->all();
+        $categorys=GoodsCategory::find()->orderBy('tree,lft')->all();
         //渲染首页视图
-        return $this->render('index',['categorys'=>$categorys,'page'=>$page]);
+        return $this->render('index',['categorys'=>$categorys]);
     }
     //新建新增分类的方法
     public function actionAdd(){
@@ -83,8 +74,14 @@ class Goods_categoryController extends \yii\web\Controller
                     //将子类添加到父类
                     $model->prependTo($parent);
                 }else{
-                    //新建一个顶级分类
-                    $model->makeRoot();
+                    //判断之前是否是一级分类
+                    if($model->getOldAttribute('parent_id')==0){
+                        //直接保存
+                        $model->save();
+                    }else{
+                        //新建一个顶级分类
+                        $model->makeRoot();
+                    }
                 }
                 //提示信息
                 \Yii::$app->session->setFlash('success','更新分类成功');

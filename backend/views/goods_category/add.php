@@ -47,7 +47,7 @@ var zTreeObj;
     zTreeObj.expandAll(true);
     //获取当前节点的父节点
     var node = zTreeObj.getNodeByParam("id", $("#goodscategory-parent_id").val(), null);
-    //选中当前节点的父节点
+    //选中当前节点
     zTreeObj.selectNode(node);
 JS
 );
