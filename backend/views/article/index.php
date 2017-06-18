@@ -5,7 +5,7 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加文章',['article/add'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加文章',['article/add'],['class'=>'btn btn-info']);
 ?>
 <table class="table table-hover table-bordered table-striped" style="margin-top: 10px">
     <tr>
@@ -38,9 +38,9 @@ echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>
             </td>
             <td><?=date('Y-m-d G:i:s',$article->create_time)?></td>
             <td>
-                <?php echo \yii\bootstrap\Html::a('删除',['article/del','id'=>$article->id],['class'=>'btn btn-danger btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('更新',['article/update','id'=>$article->id],['class'=>'btn btn-warning btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('阅读全文',['article/detail','id'=>$article->id],['class'=>'btn btn-primary btn-sm'])?>
+                <?php if(Yii::$app->user->can('article/del')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['article/del','id'=>$article->id],['class'=>'btn btn-danger btn-sm']);}?>
+                <?php if(Yii::$app->user->can('article/update')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>更新',['article/update','id'=>$article->id],['class'=>'btn btn-warning btn-sm']);}?>
+                <?php if(Yii::$app->user->can('article/detail')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-eye-open"></span>阅读全文',['article/detail','id'=>$article->id],['class'=>'btn btn-primary btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>

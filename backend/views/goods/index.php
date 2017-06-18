@@ -5,11 +5,11 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增商品',['goods/add'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增商品',['goods/add'],['class'=>'btn btn-info']);
 //表单开始
 $form=\yii\bootstrap\ActiveForm::begin();
 echo '<div style="width:300px;margin-top:10px;">'.$form->field($model,'condition')->textInput(['placeholder'=>'商品名'])->label(false).'</div>';
-echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-primary']);
+echo \yii\bootstrap\Html::submitButton('<span class="glyphicon glyphicon-search"></span>搜索',['class'=>'btn btn-primary']);
 \yii\bootstrap\ActiveForm::end();
 ?>
    <!-- <div class="row"><div class="col-md-1">{image}</div><div class="col-md-2">{input}</div></div>-->
@@ -46,10 +46,10 @@ echo \yii\bootstrap\Html::submitButton('搜索',['class'=>'btn btn-primary']);
             <td><?=$good->sort?></td>
             <td><?=date('Y-m-d G:i:s',$good->create_time)?></td>
             <td>
-                <?php echo \yii\bootstrap\Html::a('更新',['goods/update','id'=>$good->id],['class'=>'btn btn-warning btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('详情',['goods/detail','id'=>$good->id],['class'=>'btn btn-primary btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('删除',['goods/del','id'=>$good->id],['class'=>'btn btn-danger btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('相册',['goods/image','id'=>$good->id],['class'=>'btn btn-success btn-sm'])?>
+                <?php if(Yii::$app->user->can('goods/update')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>更新',['goods/update','id'=>$good->id],['class'=>'btn btn-warning btn-sm']);}?>
+                <?php if(Yii::$app->user->can('goods/detail')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-eye-open"></span>详情',['goods/detail','id'=>$good->id],['class'=>'btn btn-primary btn-sm']);}?>
+                <?php if(Yii::$app->user->can('goods/del')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['goods/del','id'=>$good->id],['class'=>'btn btn-danger btn-sm']);}?>
+                <?php if(Yii::$app->user->can('goods/image')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-picture"></span>相册',['goods/image','id'=>$good->id],['class'=>'btn btn-success btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>

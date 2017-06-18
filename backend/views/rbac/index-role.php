@@ -5,15 +5,18 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增角色',['rbac/add-role'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增角色',['rbac/add-role'],['class'=>'btn btn-info']);
 ?>
 <table class="table table-bordered table-responsive" style="margin-top: 10px;">
-    <tr>
-        <th>角色名</th>
-        <th>描述</th>
-        <th>权限</th>
-        <th>操作</th>
-    </tr>
+    <thead>
+        <tr>
+            <th>角色名</th>
+            <th>描述</th>
+            <th>权限</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
     <?php foreach($roles as $role):?>
         <tr>
             <td><?=$role->name?></td>
@@ -26,9 +29,19 @@ echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>
                 ?>
             </td>
             <td>
-                <?php echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>更新',['rbac/update-role','name'=>$role->name],['class'=>'btn btn-warning btn-sm']);?>
-                <?php echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['rbac/del-role','name'=>$role->name],['class'=>'btn btn-danger btn-sm']);?>
+                <?php if(Yii::$app->user->can('rbac/update-role')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>更新',['rbac/update-role','name'=>$role->name],['class'=>'btn btn-warning btn-sm']);}?>
+                <?php if(Yii::$app->user->can('rbac/del-role')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['rbac/del-role','name'=>$role->name],['class'=>'btn btn-danger btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>
+    </tbody>
 </table>
+<?php
+/**
+ * @var $this \yii\web\View
+ */
+$this->registerCssFile('//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css');
+$this->registerJsFile('//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js',['depends'=>\yii\web\JqueryAsset::className()]);
+$this->registerJs('$(".table").DataTable({
+
+});');

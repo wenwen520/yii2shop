@@ -32,7 +32,7 @@ function(file, data, response) {
         console.debug(data);
         var html='<tr data-id="'+data.id+'" id="image_'+data.id+'">';
         html += '<td><img src="'+data.fileUrl+'" /></td>';
-        html += '<td><button class="del_btn btn btn-danger btn-sm">删除</button></td>';
+        html += '<td><button class="del_btn btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash">删除</span></button></td>';
         html += '</tr>';
         $("table").append(html);
     }
@@ -50,7 +50,7 @@ EOF
     <?php foreach($images as $image):?>
         <tr id="image_<?=$image->id?>" data-id="<?=$image->id?>">
             <td><?=\yii\bootstrap\Html::img($image->image)?></td>
-            <td><?=\yii\bootstrap\Html::button('删除',['class'=>'del_btn btn btn-danger btn-sm'])?></td>
+            <td><?=\yii\bootstrap\Html::button('<span class="glyphicon glyphicon-trash"></span>删除',['class'=>'del_btn btn btn-danger btn-sm'])?></td>
         </tr>
     <?php endforeach;?>
 </table>

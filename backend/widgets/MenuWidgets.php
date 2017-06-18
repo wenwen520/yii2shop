@@ -1,5 +1,6 @@
 <?php
 namespace backend\widgets;
+use backend\models\Menu;
 use yii\bootstrap\Html;
 use yii\bootstrap\Widget;
 use yii\bootstrap\NavBar;
@@ -19,19 +20,27 @@ class MenuWidgets extends Widget{
                 'class' => 'navbar-inverse navbar-fixed-top',
             ],
         ]);
-    $menuItems=[
+    /*$menuItems=[
         ['label' => 'Home', 'url' => ['/user/index']],
-    ];
+    ];*/
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['user/login']];
     } else {
-        $menuItems[]=['label' => 'ATCC', 'url' => ['article_category/index']];
-        $menuItems[]=['label' => 'ATC', 'url' => ['article/index']];
-        $menuItems[]=['label' => 'BC', 'url' => ['brand/index']];
-        $menuItems[]=['label' => 'GCC', 'url' => ['goods_category/index']];
-        $menuItems[]=['label' => 'GC', 'url' => ['goods/index']];
-        $menuItems[]=['label' => 'RBACP', 'url' => ['rbac/index-permission']];
-        $menuItems[]=['label' => 'RBACR', 'url' => ['rbac/index-role']];
+        //获取所有顶级菜单
+        $menus=Menu::findAll(['parent_id'=>0]);
+        foreach($menus as $menu){
+            $item=['label' =>$menu->label, 'items' => []];
+            foreach($menu->children as $child){
+                //判断是否有操作权限
+                if(Yii::$app->user->can($child->url)){
+                    $item['items'][]=['label'=>$child->label,'url'=>[$child->url]];
+                }
+            }
+            //如果一级菜单没有子菜单就不显示
+            if(!empty($item['items'])){
+                $menuItems[] =$item;
+            }
+        }
         $menuItems[] = '<li>'
             . Html::beginForm(['/user/logout'], 'post')
             . Html::submitButton(

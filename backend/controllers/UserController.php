@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\LoginForm;
 use backend\models\PasswordForm;
 use backend\models\User;
@@ -181,7 +182,7 @@ class UserController extends \yii\web\Controller
         return $this->render('edit',['model'=>$model]);
     }
     //ACF授权
-    public function behaviors()
+    /*public function behaviors()
     {
         return [
             'acf'=>[
@@ -195,6 +196,15 @@ class UserController extends \yii\web\Controller
                     ],
                 ],
             ],
+        ];
+    }*/
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+                'only'=>['add','index','update','del','edit'],
+            ]
         ];
     }
 }

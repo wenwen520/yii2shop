@@ -5,7 +5,7 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增管理员',['user/add'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增管理员',['user/add'],['class'=>'btn btn-info']);
 ?>
 <table class="table table-bordered table-responsive" style="margin-top:10px;">
     <tr>
@@ -37,9 +37,9 @@ echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>
             <td><?=date('Y-m-d G:i:s',$user->last_login)?></td>
             <td><?=$user->last_ip?></td>
             <td>
-                <?php echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['user/del','id'=>$user->id],['class'=>'btn btn-danger btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>修改',['user/update','id'=>$user->id],['class'=>'btn btn-warning btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-pencil"></span>修改密码',['user/edit','id'=>$user->id],['class'=>'btn btn-primary btn-sm'])?>
+                <?php if(Yii::$app->user->can('user/del')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['user/del','id'=>$user->id],['class'=>'btn btn-danger btn-sm']);}?>
+                <?php if(Yii::$app->user->can('user/update')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>修改',['user/update','id'=>$user->id],['class'=>'btn btn-warning btn-sm']);}?>
+                <?php if(Yii::$app->user->can('user/edit') || $user->status==1){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-pencil"></span>修改密码',['user/edit','id'=>$user->id],['class'=>'btn btn-primary btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>

@@ -5,7 +5,7 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加文章分类',['article_category/add'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加文章分类',['article_category/add'],['class'=>'btn btn-info']);
 ?>
 <table class="table table-hover table-bordered table-striped" style="margin-top: 10px">
     <tr>
@@ -44,8 +44,8 @@ echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>
                 ?>
             </td>
             <td>
-                <?php echo \yii\bootstrap\Html::a('删除',['article_category/del','id'=>$article_category->id],['class'=>'btn btn-danger btn-sm'])?>
-                <?php echo \yii\bootstrap\Html::a('更新',['article_category/update','id'=>$article_category->id],['class'=>'btn btn-warning btn-sm'])?>
+                <?php if(Yii::$app->user->can('article_category/del')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['article_category/del','id'=>$article_category->id],['class'=>'btn btn-danger btn-sm']);}?>
+                <?php if(Yii::$app->user->can('article_category/update')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>更新',['article_category/update','id'=>$article_category->id],['class'=>'btn btn-warning btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>

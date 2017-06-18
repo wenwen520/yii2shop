@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\PermissionForm;
 use backend\models\RoleForm;
 use yii\helpers\ArrayHelper;
@@ -126,6 +127,14 @@ class RbacController extends \yii\web\Controller
         \Yii::$app->session->setFlash('success','删除角色成功');
         //返回首页
         return $this->redirect(['rbac/index-role']);
+    }
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+            ]
+        ];
     }
 
 }

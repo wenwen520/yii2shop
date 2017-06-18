@@ -5,7 +5,7 @@
     </ul>
 </div>
 <?php
-echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加',['goods_category/add'],['class'=>'btn btn-info']);
+//echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加',['goods_category/add'],['class'=>'btn btn-info']);
 ?>
 <table class="cate table table-bordered table-responsive" style="margin-top: 10px">
     <tr>
@@ -30,8 +30,8 @@ echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>
             <td><?=$category->parent_id?></td>
             <td><?=str_repeat('－',$category->depth).$category->name?><span class="menu glyphicon glyphicon-triangle-bottom" style="float:right;"></span></td>
             <td>
-                <?=\yii\bootstrap\Html::a('修改',['goods_category/update','id'=>$category->id],['class'=>'btn btn-warning btn-sm'])?>
-                <?=\yii\bootstrap\Html::a('删除',['goods_category/del','id'=>$category->id],['class'=>'btn btn-danger btn-sm'])?>
+                <?php if(Yii::$app->user->can('goods_category/update')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span>修改',['goods_category/update','id'=>$category->id],['class'=>'btn btn-warning btn-sm']);}?>
+                <?php if(Yii::$app->user->can('goods_category/del')){echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span>删除',['goods_category/del','id'=>$category->id],['class'=>'btn btn-danger btn-sm']);}?>
             </td>
         </tr>
     <?php endforeach;?>
