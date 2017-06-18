@@ -1,7 +1,13 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">首页</li>
+        <li class="active">GoodsCategory</li>
+    </ul>
+</div>
 <?php
-echo \yii\bootstrap\Html::a('添加',['goods_category/add'],['class'=>'btn btn-info']);
+echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加',['goods_category/add'],['class'=>'btn btn-info']);
 ?>
-<table class="cate table table-bordered table-responsive">
+<table class="cate table table-bordered table-responsive" style="margin-top: 10px">
     <tr>
         <th>ID</th>
         <!--<th>树ID</th>

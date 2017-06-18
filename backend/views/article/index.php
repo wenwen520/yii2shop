@@ -1,7 +1,13 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">首页</li>
+        <li class="active">Article</li>
+    </ul>
+</div>
 <?php
-echo \yii\bootstrap\Html::a('添加文章',['article/add'],['class'=>'btn btn-info']);
+echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>添加文章',['article/add'],['class'=>'btn btn-info']);
 ?>
-<table class="table table-hover table-bordered table-striped">
+<table class="table table-hover table-bordered table-striped" style="margin-top: 10px">
     <tr>
         <th>ID</th>
         <th>名称</th>

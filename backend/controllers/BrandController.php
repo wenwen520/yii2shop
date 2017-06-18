@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\Brand;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -177,5 +178,14 @@ class BrandController extends \yii\web\Controller
         $qiniu->uploadFile($fileName,$key);
         $url = $qiniu->getLink($key);
         var_dump($url);
+    }
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+                'only'=>['add','index','update','del'],
+            ]
+        ];
     }
 }

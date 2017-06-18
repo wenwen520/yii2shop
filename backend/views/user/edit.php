@@ -1,3 +1,9 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">修改密码</li>
+        <li class="active">Edit</li>
+    </ul>
+</div>
 <?php
 //表单开始
 $form=\yii\bootstrap\ActiveForm::begin();

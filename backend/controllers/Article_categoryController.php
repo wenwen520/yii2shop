@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
@@ -90,5 +91,14 @@ class Article_categoryController extends \yii\web\Controller
         $model->save();
         //跳转会首页
         return $this->redirect(['article_category/index']);
+    }
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+                'only'=>['add','index','update','del'],
+            ]
+        ];
     }
 }

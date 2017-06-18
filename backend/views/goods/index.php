@@ -1,5 +1,11 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">首页</li>
+        <li class="active">Goods</li>
+    </ul>
+</div>
 <?php
-echo \yii\bootstrap\Html::a('新增商品',['goods/add'],['class'=>'btn btn-info']);
+echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增商品',['goods/add'],['class'=>'btn btn-info']);
 //表单开始
 $form=\yii\bootstrap\ActiveForm::begin();
 echo '<div style="width:300px;margin-top:10px;">'.$form->field($model,'condition')->textInput(['placeholder'=>'商品名'])->label(false).'</div>';

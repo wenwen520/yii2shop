@@ -1,3 +1,9 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">ADD</li>
+        <li class="active">UPDATE</li>
+    </ul>
+</div>
 <?php
 //表单开始
 $form = \yii\bootstrap\ActiveForm::begin();

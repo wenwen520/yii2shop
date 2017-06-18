@@ -40,10 +40,12 @@ class UserController extends \yii\web\Controller
                 $model->status=0;
                 //保存
                 $model->save();
-                //提示信息
-                \Yii::$app->session->setFlash('success','注册成功');
-                //返回首页
-                return $this->redirect(['user/index']);
+                if($model->addRole($model->id)){
+                    //提示信息
+                    \Yii::$app->session->setFlash('success','注册成功');
+                    //返回首页
+                    return $this->redirect(['user/index']);
+                }
             }else{
                 var_dump($model->getErrors());
                 exit;
@@ -58,14 +60,18 @@ class UserController extends \yii\web\Controller
     {
         //根据ID查找对应的记录
         $model = User::findOne(['id' => $id]);
+        //加载角色
+        $model->loadRole($id);
         if ($model->load(\Yii::$app->request->post())) {
             if ($model->validate()) {
                 //保存
                 $model->save();
-                //提示信息
-                \Yii::$app->session->setFlash('success', '更新成功');
-                //返回首页
-                return $this->redirect(['user/index']);
+                if($model->updateRole($model->id)){
+                    //提示信息
+                    \Yii::$app->session->setFlash('success', '更新成功');
+                    //返回首页
+                    return $this->redirect(['user/index']);
+                }
             } else {
                 var_dump($model->getErrors());
                 exit;

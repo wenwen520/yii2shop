@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\GoodsCategory;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
@@ -112,6 +113,15 @@ class Goods_categoryController extends \yii\web\Controller
         }
         //跳转灰首页
         return $this->redirect(['goods_category/index']);
+    }
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+                'only'=>['add','index','update','del'],
+            ]
+        ];
     }
 
 }

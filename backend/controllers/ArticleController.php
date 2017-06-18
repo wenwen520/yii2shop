@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\AccessFilter;
 use backend\models\Article;
 use backend\models\ArticleDetail;
 use yii\data\Pagination;
@@ -124,6 +125,15 @@ class ArticleController extends \yii\web\Controller
                 ]
 
             ],
+        ];
+    }
+    //RBAC授权
+    public function behaviors(){
+        return [
+            'accessFilter'=>[
+                'class'=>AccessFilter::className(),
+                'only'=>['add','index','update','del','detail'],
+            ]
         ];
     }
 }

@@ -1,7 +1,11 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">ADD</li>
+        <li class="active">UPDATE</li>
+    </ul>
+</div>
 <?php
 use yii\web\JsExpression;
-
-
 //表单开始
 $form=\yii\bootstrap\ActiveForm::begin();
 //品牌名称

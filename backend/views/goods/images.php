@@ -1,3 +1,9 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">相册</li>
+        <li class="active">Photo</li>
+    </ul>
+</div>
 <?php
 use yii\web\JsExpression;
 echo \yii\bootstrap\Html::fileInput('test', NULL, ['id' => 'test','style'=>'display:none']);

@@ -1,3 +1,9 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">首页</li>
+        <li class="active">Login</li>
+    </ul>
+</div>
 <?php
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($model,'username');

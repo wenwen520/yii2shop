@@ -1,12 +1,19 @@
+<div>
+    <ul class="breadcrumb">
+        <li class="active">管理员</li>
+        <li class="active">Administrator</li>
+    </ul>
+</div>
 <?php
-echo \yii\bootstrap\Html::a('新增管理员',['user/add'],['class'=>'btn btn-info']);
+echo \yii\bootstrap\Html::a('<span class="glyphicon glyphicon-plus-sign"></span>新增管理员',['user/add'],['class'=>'btn btn-info']);
 ?>
-<table class="table table-bordered table-responsive" style="margin:10px;">
+<table class="table table-bordered table-responsive" style="margin-top:10px;">
     <tr>
         <th>ID</th>
         <th>用户名</th>
-        <th>密码</th>
+        <!--<th>密码</th>-->
         <th>邮箱</th>
+        <th>角色</th>
         <th>状态</th>
         <th>注册时间</th>
         <th>最后登录</th>
@@ -17,8 +24,14 @@ echo \yii\bootstrap\Html::a('新增管理员',['user/add'],['class'=>'btn btn-in
         <tr>
             <td><?=$user->id?></td>
             <td><?=$user->username?></td>
-            <td><?=$user->password_hash?></td>
+            <!--<td><?/*=$user->password_hash*/?></td>-->
             <td><?=$user->email?></td>
+            <td>
+                <?php foreach (Yii::$app->authManager->getRolesByUser($user->id) as $role){
+                    echo $role->description;
+                    echo ' | ';
+                }?>
+            </td>
             <td><?=\backend\models\User::$status_options[$user->status]?></td>
             <td><?=date('Y-m-d G:i:s',$user->created_at)?></td>
             <td><?=date('Y-m-d G:i:s',$user->last_login)?></td>

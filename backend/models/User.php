@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -22,6 +23,8 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    //用户角色
+    public $roles=[];
     public static $status_options=[0=>'离线',1=>'在线'];
     /**
      * @inheritdoc
@@ -30,7 +33,47 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return 'user';
     }
-
+    //获取所有的角色
+    public static function getRolesOptions(){
+        $authManager=Yii::$app->authManager;
+        //获取所有的角色
+        return ArrayHelper::map($authManager->getRoles(),'name','description');
+    }
+    //添加角色
+    public function addRole($id){
+        //关联角色
+        $authManager=Yii::$app->authManager;
+        foreach($this->roles as $roleName){
+            //找到角色
+            $role=$authManager->getRole($roleName);
+            //关联
+            if($role)$authManager->assign($role,$id);
+        }
+        return true;
+    }
+    //更新
+    public function updateRole($id){
+        $authManager=Yii::$app->authManager;
+        //去掉所有与用户相关的角色
+        $authManager->revokeAll($id);
+        //关联
+        foreach($this->roles as $roleName){
+            //找到角色
+            $role=$authManager->getRole($roleName);
+            //关联
+            if($role)$authManager->assign($role,$id);
+        }
+        return true;
+    }
+    //加载角色
+    public function loadRole($id){
+        //找到当前用户对应的角色
+        $authManager=Yii::$app->authManager;
+        $roles=$authManager->getRolesByUser($id);
+        foreach($roles  as $role){
+            $this->roles[]=$role->name;
+        }
+    }
     /**
      * @inheritdoc
      */
@@ -44,6 +87,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['auth_key'],'string'],
             [['email'],'email'],
+            [['roles'],'safe'],
         ];
     }
 
@@ -62,6 +106,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'created_at' => 'Created At',
             'last_login' => 'Last Login',
             'last_ip' => 'Last Ip',
+            'roles'=>'用户角色',
         ];
     }
 
