@@ -104,6 +104,9 @@
             echo $form->field($model,'city_id')->hiddenInput();
             echo $form->field($model,'area_id')->hiddenInput();
             echo '所在地区：<select name="province"><option>请选择省份</option></select><select name="city"><option>请选择城市</option></select><select name="area"><option>请选择区县</option></select>';
+            $province_id=$model->province_id?$model->province_id:0;
+            $city_id = $model->city_id?$model->city_id:0;
+            $area_id = $model->area_id?$model->area_id:0;
             $js=new \yii\web\JsExpression(
                     <<<JS
                 //因为我们首先要选择省份，所以我们要准备省份数据
@@ -116,11 +119,17 @@
 				$.getJSON('read.html',data,function(response){
 					//因为PHP返回了多条数据，所以我们需要遍历response
 					$(response).each(function(i,v){
-						//因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
-						var html='<option value="'+v.id+'">'+v.name+'</option>'
+					    if(v.id==$province_id){
+					        var html='<option value="'+v.id+'" selected>'+v.name+'</option>'
+					    }else{
+					        //因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
+						    var html='<option value="'+v.id+'">'+v.name+'</option>'
+					    }
 						//因为我们需要将数据放入select下拉框中，所以我们通过HTML将数据放入到下拉框中
 						$(html).appendTo('select[name=province]');
 					});
+					//触发选中省事件
+					$('select[name=province]').change();
 				});
 			});
 			//因为我们选择省份过后要选择市，所以我们要准备市数据，当省份的下拉框触发change事件时，我们视为选择了省份
@@ -141,11 +150,19 @@
 				$.getJSON('read.html',data,function(response){
 					//因为PHP返回了多条数据，所以我们需要遍历response
 					$(response).each(function(i,v){
-						//因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
-						var html='<option value="'+v.id+'">'+v.name+'</option>'
+					        if(v.id==$city_id){
+                                var html='<option value="'+v.id+'" selected>'+v.name+'</option>'
+					        }else{
+					        //因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
+                                var html='<option value="'+v.id+'">'+v.name+'</option>'
+					        }
+
+
 						//因为我们需要将数据放入select下拉框中，所以我们通过HTML将数据放入到下拉框中
 						$(html).appendTo('select[name=city]');
 					});
+					//触发选中城市事件
+					$('select[name=city]').change();
 				});
 			});
 			//因为我们选择市过后要选择市，所以我们要准备区县数据，当市的下拉框触发change事件时，我们视为选择了市
@@ -164,8 +181,13 @@
 				$.getJSON('read.html',data,function(response){
 					//因为PHP返回了多条数据，所以我们需要遍历response
 					$(response).each(function(i,v){
-						//因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
+                           if(v.id==$area_id){
+                                var html='<option value="'+v.id+'" selected>'+v.name+'</option>'
+                           }else{
+                           //因为插入的文本可能会很长，所以我们将文本放入到一个变量中方便使用
 						var html='<option value="'+v.id+'">'+v.name+'</option>'
+                           }
+
 						//因为我们需要将数据放入select下拉框中，所以我们通过HTML将数据放入到下拉框中
 						$(html).appendTo('select[name=area]');
 					});
@@ -180,18 +202,6 @@ JS
             );
             //加载js
             $this->registerJs($js);
-            //下拉框回显
-            /*$show='';
-            if($model->province_id){
-                $show.='$("select[name=province]").val("'.$model->province_id.'");';
-            }
-            if($model->city_id){
-                $show.='$("select[name=province]").change();$("select[name=city]").val("'.$model->city_id.'");';
-            }
-            if($model->area_id){
-                $show.='$("select[name=city]").change();$("select[name=area]").val("'.$model->area_id.'");';
-            }
-            $this->registerJs($show);*/
             echo $form->field($model,'detail_address')->textInput(['class'=>'txt']);
             echo $form->field($model,'phone')->textInput(['class'=>'txt']);
             echo $form->field($model,'status')->checkbox();

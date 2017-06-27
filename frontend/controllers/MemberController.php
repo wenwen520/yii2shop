@@ -12,6 +12,7 @@ use frontend\models\Member;
 use frontend\models\Order;
 use frontend\models\Order_goods;
 use yii\data\Pagination;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\Cookie;
 use yii\web\HttpException;
@@ -531,74 +532,141 @@ class MemberController extends \yii\web\Controller
 
     //提交订单
     public function actionSubmit_order(){
+
         $this->layout='cart';
-        $model = new Order();
-        $order_goods = new Order_goods();
+        $order = new Order();
+
+
         $member_id = \Yii::$app->user->identity->getId();
         //接收订单页面传输的地址数据、运费数据、总金额和收货信息
         $detail = \Yii::$app->request->post();
 
-        //根据地址id去查询地址详情
-        $address =Address::findOne(['id'=>$detail['address']]);
 
+        //遍历支付方式
+        $payment_detail = '';
+        foreach (Order::$payment_goods as $payment) {
+            //如果传过来的支付id和静态变量里某条id一致 就把那条数据赋值给一个变量保存
+            if ($payment['payment_id'] == $detail['payment']) {
+                $payment_detail = $payment;
+
+            }
+        }
 
         $delivery_detail='';
         //遍历送货方式
-        foreach(Order::$delivery_goods as $delivery){
+        foreach(Order::$delivery_goods as $delivery) {
             //如果传过来的送货id和静态变量里某条id一致 就把那条数据赋值给一个变量保存
-            if($delivery['delivery_id']==$detail['delivery']){
-                $delivery_detail=$delivery;
+            if ($delivery['delivery_id'] == $detail['delivery']) {
+                $delivery_detail = $delivery;
             }
         }
-        //遍历支付方式
-        $payment_detail ='';
-        foreach(Order::$payment_goods as $payment){
-            //如果传过来的支付id和静态变量里某条id一致 就把那条数据赋值给一个变量保存
-            if($payment['payment_id']==$detail['payment']);
-            $payment_detail=$payment;
-        }
 
-        //根据用户id去购物车查该用户的所有商品信息 拿到商品的id 去商品表查询详情赋值给商品订单表
+
+
+
         $cart = Cart::find()->where(['member_id'=>$member_id])->all();
-//        var_dump($cart);exit;
+        //开启事务
+        $transaction = \Yii::$app->db->beginTransaction();
+        //捕获异常
+        try {
+            //根据地址id去查询地址详情 操作订单主表
+            $address =Address::findOne(['id'=>$detail['address']]);
+            $order->member_id =$member_id;
+            $order->name=$address->name;
+            $order->province=$address->province_id;
+            $order->city=$address->city_id;
+            $order->area=$address->area_id;
+            $order->address=$address->detail_address;
+            $order->tel=$address->phone;
+            $order->create_time = time();
+            $order->status = 1;
+            $order->total = $detail['total'];
+            $order->payment_id = $payment_detail['payment_id'];
+            $order->payment_name = $payment_detail['payment_name'];
+            $order->delivery_id = $delivery_detail['delivery_id'];
+            $order->delivery_name = $delivery_detail['delivery_name'];
+            $order->delivery_price = $delivery_detail['delivery_price'];
+            if(!$order->save()){
+                throw new Exception('订单主表保存失败!');
+            }
+            //操作订单商品表
+            foreach ($cart as $car) {
+                $sp = Goods::findOne(['id' => $car['goods_id']]);
+                $order_goods = new Order_goods();
+                //判断商品库存
+                if ($sp->stock < $car['amount']) {
+                    throw new Exception('库存不足');
+                }
+                $order_id = $order->id;
+                $order_goods->order_id = $order_id;
+                $order_goods->goods_name = $sp->name;
+                $order_goods->goods_id = $sp->id;
+                $order_goods->logo = $sp->logo;
+                $order_goods->price = $sp->shop_price;
+                $order_goods->amount = $car['amount'];
+                $order_goods->total = $car['amount'] * $sp->shop_price;
+                $sp->stock -= $car['amount'];
+                if(!$sp->save() || !$order_goods->save()){
+                    throw new Exception('订单商品表操作失败或商品库存保存失败！');
+                }
+            }
+            //提交事务
+            $transaction->commit();
+            //执行成功 清除购物车
+            foreach($cart as $car){
+                $deleteCart = Cart::deleteAll(['member_id'=>$member_id,'goods_id'=>$car['goods_id']]);
+                if(!$deleteCart){
+                    throw new Exception('购物车清空失败');
+                }
+            }
+           if($order_goods->save()){
+               $data= [
+                   'message'=>true,
+               ];
 
-        foreach($cart as $car){
-            $sp =  Goods::findOne(['id'=>$car['goods_id']]);
+           }else{
+               $data= [
+                   'message'=>false,
+               ];
+           }
+            echo json_encode($data);
 
+
+        }catch(Exception $e){
+            $transaction->rollBack();
         }
 
 
-        if($model->validate()){
-            //存进数据库
-            $model->member_id =$member_id;
-            $model->name=$address->name;
-            $model->province=$address->province_id;
-            $model->city=$address->city_id;
-            $model->area=$address->area_id;
-            $model->address=$address->detail_address;
-            $model->tel=$address->detail_address;
-            $model->create_time = time();
-            $model->delivery_id = $delivery_detail['delivery_id'];
-            $model->delivery_name = $delivery_detail['delivery_name'];
-            $model->delivery_price = $delivery_detail['delivery_price'];
-            $model->payment_id = $payment_detail['payment_id'];
-            $model->payment_name = $payment_detail['payment_name'];
-            $model->total = $detail['total'];
-            $model->save();
-            //获取订单的id
-            $order_id = $model->id;
-            $order_goods->order_id = $order_id;
-            $order_goods->goods_name=$sp->name;
-            $order_goods->goods_id=$sp->id;
-            $order_goods->logo=$sp->logo;
-            $order_goods->price=$sp->shop_price;
-            $order_goods->amount=$car['amount'];
-            $order_goods->total=$car['amount']*$sp->shop_price;
-            $order_goods->save();
 
-        }else{
-            var_dump($model->getErrors());
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -609,11 +677,15 @@ class MemberController extends \yii\web\Controller
 
 
         return $this->render('submit');
+
     }
 
 
-
-
+    //订单提交成功跳转页面
+    public function actionSubmit(){
+            $this->layout='cart';
+        return $this->render('submit');
+    }
 
 
 

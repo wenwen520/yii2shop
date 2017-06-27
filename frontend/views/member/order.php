@@ -278,7 +278,11 @@ $this->registerJs(
 
                          //ajax 发送请求和数据到后台
 
-                          $.post("$url",{delivery:delivery,payment:payment,address:address,total:total,"_csrf-frontend":"$token"});
+                          $.post("$url",{delivery:delivery,payment:payment,address:address,total:total,"_csrf-frontend":"$token"},function(data){
+                            if(data.message){
+                              window.location('http://www.yii2shop.com/web/frontend/views/member/submit.html');
+                            }
+                          });
 
 
 
