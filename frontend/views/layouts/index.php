@@ -61,9 +61,12 @@ use common\widgets\Alert;
         <div class="search fl">
             <div class="search_form">
                 <div class="form_left fl"></div>
-                <form action="" name="serarch" method="get" class="fl">
-                    <input type="text" class="txt" value="请输入商品关键字" /><input type="submit" class="btn" value="搜索" />
+                <form action="<?=\yii\helpers\Url::to(['member/search'])?>" name="search" method="post" class="fl">
+                    <input type="text" class="txt" value="请输入商品关键字"  name="keyword"/>
+                    <input type="submit" class="btn" value="搜索" />
+                    <input name="_csrf-frontend" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
                 </form>
+
                 <div class="form_right fl"></div>
             </div>
 

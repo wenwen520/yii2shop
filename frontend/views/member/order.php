@@ -194,7 +194,7 @@ $this->registerCssFile('@web/style/base.css');
     </div>
 
     <div class="fillin_ft">
-        <a href="javascript:;" class="submit_order"></a>
+        <a href="submit.html" class="submit_order"></a>
         <p>应付总额：￥<strong class="count"></strong></p>
     </div>
 </div>

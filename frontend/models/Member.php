@@ -32,6 +32,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public $cookie;
     public $messageCode;
     const SCENARIO_REGISTER='register';
+    const SCENARIO_API_REGISTER='api_register';//api注册
     /**
      * @inheritdoc
      */
@@ -46,7 +47,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username','email','tel'],'required'],
+            [['username','email'],'required'],
             [['password','repassword','messageCode'],'required','on'=>self::SCENARIO_REGISTER],
             [['last_login_time', 'last_login_ip', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username'], 'string', 'max' => 50],
@@ -54,10 +55,11 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             [['password_hash', 'email'], 'string', 'max' => 100],
             [['tel'], 'string', 'max' => 11],
             [['code'],'captcha','on'=>self::SCENARIO_REGISTER],
+            [['code'],'captcha','on'=>self::SCENARIO_API_REGISTER,'captchaAction'=>'api/captcha'],
             [['repassword'], 'compare','compareAttribute'=>'password','on'=>self::SCENARIO_REGISTER],
             [['cookie'],'safe'],
             //验证短信验证码
-            ['messageCode','validateMessage','on'=>self::SCENARIO_REGISTER]
+            ['messageCode','validateMessage','on'=>self::SCENARIO_REGISTER],
         ];
     }
     //验证短信验证码

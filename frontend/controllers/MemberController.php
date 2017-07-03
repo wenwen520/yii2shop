@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use backend\models\Goods;
 use backend\models\GoodsCategory;
+use frontend\components\SphinxClient;
 use frontend\models\Address;
 use frontend\models\Cart;
 use frontend\models\Locations;
@@ -202,11 +203,15 @@ class MemberController extends \yii\web\Controller
     }
 
     //商品列表
-    public function actionList($cate_id)
+    public function actionList($cate_id,$keyword)
     {
         $this->layout = 'goods';
+
+
         //新建商品模型对象
         $goods_page = Goods::find();
+
+
         $total = $goods_page->count();
         //配置分页
         $page = new Pagination([
@@ -619,73 +624,83 @@ class MemberController extends \yii\web\Controller
                     throw new Exception('购物车清空失败');
                 }
             }
-           if($order_goods->save()){
-               $data= [
-                   'message'=>true,
-               ];
-
-           }else{
-               $data= [
-                   'message'=>false,
-               ];
-           }
-            echo json_encode($data);
 
 
         }catch(Exception $e){
             $transaction->rollBack();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return $this->render('submit');
+    }
 
+    //测试分词搜索
+    public function actionTest()
+    {
+//        $cl = new SphinxClient();
+//        $cl->SetServer ( '127.0.0.1', 9312);
+//        $cl->SetConnectTimeout ( 10 );
+//        $cl->SetArrayResult ( true );
+//        $cl->SetMatchMode ( SPH_MATCH_ALL);
+//        $cl->SetLimits(0, 1000);
+//        $info = '索尼电视';
+//        $res = $cl->Query($info, 'goods');//shopstore_search
+//
+//        var_dump($res);
     }
 
 
-    //订单提交成功跳转页面
-    public function actionSubmit(){
-            $this->layout='cart';
-        return $this->render('submit');
-    }
+        public function actionSearch(){
+
+            $this->layout='goods';
+            $model = Goods::find();
+
+            //分词搜索
+        if($keyword= \Yii::$app->request->post('keyword')){
+//            var_dump($keyword);exit;
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_ALL);
+            $cl->SetLimits(0, 1000);
+            $res = $cl->Query($keyword, 'goods');
+//            var_dump($res);exit;
+            if(!isset($res['matches'])){
+                $model->where(['id'=>0]);
+
+            }else{
+                //获取商品id
+
+                $ids = ArrayHelper::map($res['matches'],'id','id');
+                $model->where(['in','id',$ids]);
+            }
+
+
+        }
+
+
+            $page = new Pagination([
+                'totalCount'=>$model->count(),
+                'defaultPageSize'=>5
+            ]);
+
+            $goods = $model->offset($page->offset)->limit($page->limit)->all();
+            $keyword=array_keys($res['words']);
+            $options = array(
+                'before_match'=>'<span style="color:red;">',
+                'after_match'=>'</span>',
+                'chunk_separator'=>'...',
+                'limit'=>80,
+            );
+            foreach($goods as $index=>$item){
+                $name = $cl->BuildExcerpts([$item->name],'goods',implode(',',$keyword),$options);
+                $goods[$index]->name = $name[0];
+            }
+
+
+
+            return $this->render('list',['goods'=>$goods,'page'=>$page]);
+        }
+
 
 
 
